@@ -210,6 +210,22 @@ public class VehicleHandler {
     });
   }
 
+  public void postVehicleCommAdapterPosition(String name, String newValue)
+      throws ObjectUnknownException {
+    requireNonNull(name, "name");
+    requireNonNull(newValue, "newValue");
+
+    executorWrapper.callAndWait(() -> {
+      Vehicle vehicle = vehicleService.fetch(Vehicle.class, name)
+          .orElseThrow(() -> new ObjectUnknownException("Unknown vehicle: " + name));
+
+      Point point = vehicleService.fetch(Point.class, newValue)
+          .orElseThrow(() -> new ObjectUnknownException("Unknown point: " + newValue));
+
+      vehicleService.updateVehiclePosition(vehicle.getReference(), point.getReference());
+    });
+  }
+
   public void postVehicleCommAdapterMessage(
       String name,
       PostVehicleCommAdapterMessageRequestTO request
