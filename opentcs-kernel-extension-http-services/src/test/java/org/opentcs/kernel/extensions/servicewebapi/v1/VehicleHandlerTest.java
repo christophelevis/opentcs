@@ -85,6 +85,39 @@ class VehicleHandlerTest {
   }
 
   @Test
+  void setVehiclePosition() {
+    // Arrange
+    Point point = new Point("some-point");
+    given(vehicleService.fetch(Point.class, "some-point")).willReturn(Optional.of(point));
+
+    // Act
+    handler.postVehicleCommAdapterPosition("some-vehicle", "some-point");
+
+    // Assert
+    then(vehicleService).should().updateVehiclePosition(
+        vehicle.getReference(), point.getReference()
+    );
+  }
+
+  @Test
+  void throwOnSetPositionForUnknownVehicle() {
+    assertThatExceptionOfType(ObjectUnknownException.class)
+        .isThrownBy(
+            () -> handler.postVehicleCommAdapterPosition("some-unknown-vehicle", "some-point")
+        );
+  }
+
+  @Test
+  void throwOnSetPositionForUnknownPoint() {
+    given(vehicleService.fetch(Point.class, "some-unknown-point")).willReturn(Optional.empty());
+
+    assertThatExceptionOfType(ObjectUnknownException.class)
+        .isThrownBy(
+            () -> handler.postVehicleCommAdapterPosition("some-vehicle", "some-unknown-point")
+        );
+  }
+
+  @Test
   void attachMockVehicleAdapter() {
     // Act
     handler.putVehicleCommAdapter(
