@@ -94,7 +94,9 @@ class VehicleHandlerTest {
     handler.postVehicleCommAdapterPosition("some-vehicle", "some-point");
 
     // Assert
-    then(vehicleService).should().updateVehiclePosition(vehicle.getReference(), point.getReference());
+    then(vehicleService).should().updateVehiclePosition(
+        vehicle.getReference(), point.getReference()
+    );
   }
 
   @Test
